@@ -20,11 +20,15 @@ async fn main() {
     .allow_methods([hyper::Method::POST]);
 
   if let Some(allowed_origins) = config.cors_allowed_origins {
+    let mut origins = Vec::new();
+
     for origin in allowed_origins {
       if let Ok(origin) = origin.parse::<hyper::header::HeaderValue>() {
-        cors = cors.allow_origin(origin);
+        origins.push(origin);
       }
     }
+
+    cors = cors.allow_origin(origins);
   } else {
     cors = cors.allow_origin(hyper::header::HeaderValue::from_static("*"));
   }
